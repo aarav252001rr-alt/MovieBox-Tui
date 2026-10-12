@@ -1,165 +1,32 @@
-<div align="center">
+# MovieBox API scaffold
 
-# MovieBox-TUI
+This is a deployable FastAPI starter, not a finished MovieBox streaming API. MovieBox-TUI is a Rust terminal application; its features do not automatically become HTTP endpoints. Provider-backed search, details, source extraction, and playback must be implemented against a verified provider interface and used only where you have rights/authorization.
 
-**Terminal interface to find, download, and stream movies, TV shows, and live TV using local media players.**
-
-[ English ](README.md) • [ বাংলা ](README_BN.md) • [ हिन्दी ](README_HI.md) • [ Español ](README_ES.md)
-
-[![CI](https://img.shields.io/github/actions/workflow/status/mesamirh/MovieBox-Tui/ci.yml?branch=main&label=CI&logo=github&style=flat)](https://github.com/mesamirh/MovieBox-Tui/actions/workflows/ci.yml)
-[![crates.io](https://img.shields.io/crates/v/moviebox-tui.svg?logo=rust&style=flat)](https://crates.io/crates/moviebox-tui)
-[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg?style=flat)](#license)
-[![Telegram](https://img.shields.io/badge/Telegram-Channel-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/getfromme)
-[![Support](https://img.shields.io/badge/Support-Crypto-F7931A?style=flat&logo=bitcoin&logoColor=white)](#optional-support)
-</div>
-
-[moviebox-tui-walkthrough.webm](https://github.com/user-attachments/assets/7554a7e5-6ff5-49ec-9d87-f821ea99950e)
-
-## Features
-
-- **Streaming:** Movies, TV series, anime, Asian dramas, and community Stremio addons across multiple native providers.
-- **Live TV:** M3U playlist import with channel categories, EPG support, and search.
-- **Resolution Picker:** Direct stream quality selection (`4K`, `1080p`, `720p`, `480p`, `Auto`) before playback.
-- **Hardware Players:** Direct launch in `mpv`, `VLC`, or `IINA` with custom auth header and cookie forwarding.
-- **Batch Downloader:** Multi-segment concurrent downloader with HTTP range pause and resume for episodes and full seasons.
-- **Subtitle Picker:** Multi-language subtitle tracks extracted and selectable via an interactive picker before playback or download.
-- **Terminal UI:** Vim navigation, mouse interaction, slash command palette (`/help`, `/settings`), and 9 built-in themes.
-- **Cover Art:** Native Kitty, Sixel, and iTerm2 poster rendering with automatic text fallback.
-- **Resume & Library:** Home deck with continue-watching timestamps, watch history, and favorites stored strictly on local disk. Zero telemetry.
-
-## Prerequisites
-
-- **Media Player:** `mpv`, `VLC`, or `IINA` (macOS) / any external video player (Android).
-- **Posters:** Terminal with Sixel, Kitty, or iTerm2 support (Ghostty, Kitty, WezTerm, iTerm2, foot, Windows Terminal v1.22+).
-- **DASH Downloads:** `yt-dlp` and `ffmpeg` (required only for MovieBox DASH downloads).
-
-## Installation
-
-### macOS & Linux
-
-If you have [Homebrew](https://brew.sh/) on macOS:
-```bash
-brew tap mesamirh/moviebox-tui https://github.com/mesamirh/MovieBox-Tui
-brew install moviebox-tui
-```
-
-> **Note:** If Homebrew prompts for tap verification on initial install, run `brew trust mesamirh/moviebox-tui`.
-
-Direct install via Terminal (macOS & Linux, no package manager needed):
-```bash
-curl -fsSL https://raw.githubusercontent.com/mesamirh/MovieBox-Tui/main/install.sh | bash
-```
-
-### Windows
-
-If you have [Scoop](https://scoop.sh/) (recommended):
-```powershell
-scoop bucket add moviebox https://github.com/mesamirh/MovieBox-Tui
-scoop install moviebox-tui
-```
-
-Direct install via PowerShell (no package manager needed):
-```powershell
-irm https://raw.githubusercontent.com/mesamirh/MovieBox-Tui/main/install.ps1 | iex
-```
-
-> **SmartScreen prompt:** If Windows displays *"Windows protected your PC"*, click **More info** → **Run anyway**.
-
-### Android (Termux)
-```bash
-pkg update && pkg install -y curl tar termux-tools termux-am
-curl -fsSL https://raw.githubusercontent.com/mesamirh/MovieBox-Tui/main/install.sh | bash
-termux-setup-storage
-```
-
-<details>
-<summary><b>Cargo & Source Build</b></summary>
+## Run locally
 
 ```bash
-cargo install moviebox-tui --locked
+python -m venv .venv
+# Linux/macOS:
+source .venv/bin/activate
+# Windows:
+# .venv\\Scripts\\activate
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-From source:
-```bash
-git clone https://github.com/mesamirh/MovieBox-Tui.git
-cd MovieBox-Tui
-cargo build --release --locked
-```
+Open `http://localhost:8000/docs`.
 
-</details>
+## Railway
 
-<details>
-<summary><b>Verify Release Integrity</b></summary>
+1. Push this folder to a GitHub repository.
+2. In Railway, create a project and deploy that GitHub repository.
+3. Railway detects `Dockerfile`; `railway.json` configures `/health`.
+4. Open the generated public domain and test `/`, `/health`, and `/docs`.
 
-```bash
-sha256sum -c SHA256SUMS --ignore-missing
-gh attestation verify <archive-file> -R mesamirh/MovieBox-Tui
-```
+## Current status
 
-</details>
-
-<details>
-<summary><b>Uninstall</b></summary>
-
-Re-run install command (`curl ... | bash` or `irm ... | iex`) and select `2) Uninstall`.
-
-Or via package manager:
-```bash
-brew uninstall moviebox-tui     # Homebrew
-scoop uninstall moviebox-tui    # Scoop
-cargo uninstall moviebox-tui    # Cargo
-```
-
-</details>
-
-## Quick Start
-
-```bash
-moviebox-tui
-```
-
-- Type to search, press `Enter` to play.
-- Press `?` for shortcuts, or type `/settings` for preferences.
-
-## Documentation
-
-Full documentation at [**mesamirh.github.io/MovieBox-Tui**](https://mesamirh.github.io/MovieBox-Tui/) or [`docs/`](docs/):
-
-| Guide | Description |
-| :--- | :--- |
-| [Keyboard & Controls](docs/controls.md) | Keybindings, vim navigation, and shortcuts |
-| [Configuration](docs/config.md) | Settings, themes, and environment variables |
-| [Content Providers](docs/providers.md) | Native scrapers (MovieBox, 4KHDHub, Dramachi, BDIX) |
-| [Stremio Addons](docs/addons-mode.md) | Community addon configuration and streaming |
-| [Hardware Players](docs/players.md) | Player detection, launch options, and flags |
-| [Live TV & IPTV](docs/tv-mode.md) | M3U playlist import and channel streaming |
-| [Batch Downloads](docs/downloads.md) | HTTP range engine, pause, and resume |
-
-## Contributing
-
-Review [CONTRIBUTING.md](CONTRIBUTING.md) before submitting pull requests. Report bugs via [GitHub Issues](https://github.com/mesamirh/MovieBox-Tui/issues).
-
-<details>
-<summary><b>Support</b></summary>
-<div id="optional-support" tabindex="-1"></div>
-
-| Asset | Address |
-| :--- | :--- |
-| **USDT (TRC20)** | `TL4yW73qmbKZpBWwbEFgjBpwVkPDFTkJgV` |
-| **Bitcoin (BTC)** | `3MEAtqtRWrQBhnaMi3Zuf5nt2efNUS2LUQ` |
-| **Ethereum (EVM)** | `0x7ea20d5fa29d87f33195f5a3b211ff94038d794c` |
-| **Solana (SOL)** | `6ctm5WFv73MNywoCKAz3xK72yizSspHa72rFNygooU6` |
-
-</details>
-
-## Privacy
-
-Zero telemetry, analytics, or user tracking. History, favorites, and config remain local.
-
-## License
-
-Dual-licensed under [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE).
-
-## Disclaimer
-
-MovieBox-TUI does not host or store media. It plays publicly available streams. Users must comply with local laws.
+- `/` and `/health` are functional.
+- Route shapes are present for search, movie/TV details, sources, formats, streams, anime, live TV and subtitles.
+- Provider-dependent endpoints return an explicit not-configured response or placeholder. They do not invent movie data or stream URLs.
+- Add a real provider adapter in `app/providers/` and register it in `app/providers/registry.py`.
+- Restrict CORS to your frontend domain before production.
